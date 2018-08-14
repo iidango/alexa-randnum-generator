@@ -77,13 +77,14 @@ def handle_session_end_request():
 def generate_random_num(intent, session, num1=1, num2=6, count=1):
     """ Create random number
     """
-    session_attributes = {}
-    should_end_session = False
-
     if 'slots' in intent:
         num1 = int(intent['slots'].get('firstNum', {}).get('value', num1))
         num2 = int(intent['slots'].get('secondNum', {}).get('value', num2))
         count = int(intent['slots'].get('count', {}).get('value', count))
+
+    session_attributes = {}
+    session_attributes.update({'num1': num1, 'num2': num2, 'count': count})
+    should_end_session = False
 
     # card_title = intent['name']
     card_title = "{}から{}の乱数を{}個".format(num1, num2, count)
@@ -140,6 +141,9 @@ def on_intent(intent_request, session):
         return generate_random_num(intent, session, num1=1, num2=100)
     elif intent_name == "RouletteIntent":
         return generate_random_num(intent, session, num1=1, num2=10)
+    elif intent_name == "RepeatIntent":
+        attributes = session.get('attributes', {'num1': 1, 'num2': 6, 'count': 1})
+        return generate_random_num(intent, session, **attributes)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
