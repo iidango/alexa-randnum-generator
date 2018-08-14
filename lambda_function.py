@@ -48,14 +48,14 @@ def get_welcome_response():
     """
 
     session_attributes = {}
-    card_title = "乱数ジェネレータ"
+    card_title = "乱数のある生活"
     speech_output = "あなたのほしい乱数を生成します。" \
-                    "乱数を生成などと言ってみてください"
+                    "3つから一つ選んで、や、サイコロを3回振ってなどと言ってみてください"
 
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
-    reprompt_text = "あなたのほしい乱数を生成します。" \
-                    "乱数を生成などと言ってみてください"
+    # reprompt_text = speech_output
+    reprompt_text = ""
 
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
@@ -96,7 +96,8 @@ def generate_random_num(intent, session, num1=1, num2=6, count=1):
         speech_output += str(num) + "、"
     speech_output += "です"
 
-    reprompt_text = speech_output
+    # reprompt_text = speech_output
+    reprompt_text = ""
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
@@ -141,6 +142,8 @@ def on_intent(intent_request, session):
         return generate_random_num(intent, session, num1=1, num2=100)
     elif intent_name == "RouletteIntent":
         return generate_random_num(intent, session, num1=1, num2=10)
+    elif intent_name == "SelectIntent":
+        return generate_random_num(intent, session, num1=1)
     elif intent_name == "RepeatIntent":
         attributes = session.get('attributes', {'num1': 1, 'num2': 6, 'count': 1})
         return generate_random_num(intent, session, **attributes)
