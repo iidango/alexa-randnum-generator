@@ -70,8 +70,9 @@ def get_help_response():
     session_attributes = {}
     card_title = "乱数のある生活"
     speech_output = "あなたのほしい乱数を生成します。" \
-                    "3つの選択肢から1つを選んでほしい時は，「アレクサ，乱数のある生活を開いて3つのうちから一つ選んで」と話しかけてみてください。" \
-                    "サイコロやルーレットを振りたい時は，「アレクサ，サイコロを1回振って」などと話しかけてみてください。"
+                    "3つの選択肢から1つを選んでほしい時は，「3つのうちから一つ選んで」と話しかけてみてください。" \
+                    "サイコロやルーレットを振りたい時は，「サイコロを1回振って」などと話しかけてみてください。" \
+                    "「もう一度」と話しかけると一つ前と同じ条件で新しい乱数を生成します。" \
 
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
