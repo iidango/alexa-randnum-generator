@@ -118,7 +118,7 @@ def generate_random_num(intent, session, num1=1, num2=6, count=1):
 
         session_attributes = {}
         session_attributes.update({'num1': num1, 'num2': num2, 'count': count})
-        should_end_session = True
+        should_end_session = False
 
         # card_title = intent['name']
         card_title = "{}から{}の乱数を{}個".format(num1, num2, count)
@@ -128,7 +128,7 @@ def generate_random_num(intent, session, num1=1, num2=6, count=1):
         for i in range(count):
             num = random.randint(num1, num2)
             speech_output += str(num) + "、"
-        speech_output += "です"
+        speech_output += "です。続けて他の数字を生成できます。"
     except ValueError:
         return handle_error_status()
 
