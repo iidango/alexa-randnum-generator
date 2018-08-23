@@ -74,32 +74,48 @@ def handle_session_end_request():
         card_title, speech_output, None, should_end_session))
 
 
+def handle_error_status():
+    # card_title = "Session Ended"
+    card_title = "エラー"
+
+    speech_output = "すいません。よくわかりませんでした。"
+
+    # Setting this to true ends the session and exits the skill.
+    should_end_session = True
+    return build_response({}, build_speechlet_response(
+        card_title, speech_output, None, should_end_session))
+
+
 def generate_random_num(intent, session, num1=1, num2=6, count=1):
     """ Create random number
     """
-    if 'slots' in intent:
-        num1 = int(intent['slots'].get('firstNum', {}).get('value', num1))
-        num2 = int(intent['slots'].get('secondNum', {}).get('value', num2))
-        count = int(intent['slots'].get('count', {}).get('value', count))
+    try:
+        if 'slots' in intent:
+            num1 = int(intent['slots'].get('firstNum', {}).get('value', num1))
+            num2 = int(intent['slots'].get('secondNum', {}).get('value', num2))
+            count = int(intent['slots'].get('count', {}).get('value', count))
 
-    session_attributes = {}
-    session_attributes.update({'num1': num1, 'num2': num2, 'count': count})
-    should_end_session = True
+        session_attributes = {}
+        session_attributes.update({'num1': num1, 'num2': num2, 'count': count})
+        should_end_session = True
 
-    # card_title = intent['name']
-    card_title = "{}から{}の乱数を{}個".format(num1, num2, count)
-    print("create {} random number from {} to {}".format(count, num1, num2))
-    
-    speech_output = ""
-    for i in range(count):
-        num = random.randint(num1, num2)
-        speech_output += str(num) + "、"
-    speech_output += "です"
+        # card_title = intent['name']
+        card_title = "{}から{}の乱数を{}個".format(num1, num2, count)
+        print("create {} random number from {} to {}".format(count, num1, num2))
+
+        speech_output = ""
+        for i in range(count):
+            num = random.randint(num1, num2)
+            speech_output += str(num) + "、"
+        speech_output += "です"
+    except ValueError:
+        return handle_error_status()
 
     # reprompt_text = speech_output
     reprompt_text = ""
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
+
 
 # --------------- Events ------------------
 
