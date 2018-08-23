@@ -84,7 +84,7 @@ def generate_random_num(intent, session, num1=1, num2=6, count=1):
 
     session_attributes = {}
     session_attributes.update({'num1': num1, 'num2': num2, 'count': count})
-    should_end_session = False
+    should_end_session = True
 
     # card_title = intent['name']
     card_title = "{}から{}の乱数を{}個".format(num1, num2, count)
