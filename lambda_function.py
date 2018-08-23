@@ -48,9 +48,30 @@ def get_welcome_response():
     """
 
     session_attributes = {}
-    card_title = "乱数のある生活"
+    card_title = "乱数のある生活ヘルプ"
     speech_output = "あなたのほしい乱数を生成します。" \
                     "3つから一つ選んで、や、サイコロを3回振ってなどと言ってみてください"
+
+    # If the user either does not reply to the welcome message or says something
+    # that is not understood, they will be prompted again with this text.
+    # reprompt_text = speech_output
+    reprompt_text = ""
+
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, reprompt_text, should_end_session))
+
+
+def get_help_response():
+    """ If we wanted to initialize the session to have some attributes we could
+    add those here
+    """
+
+    session_attributes = {}
+    card_title = "乱数のある生活"
+    speech_output = "あなたのほしい乱数を生成します。" \
+                    "3つの選択肢から1つを選んでほしい時は，「アレクサ，乱数のある生活を開いて3つのうちから一つ選んで」と話しかけてみてください。" \
+                    "サイコロやルーレットを振りたい時は，「アレクサ，サイコロを1回振って」などと話しかけてみてください。"
 
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
@@ -164,7 +185,7 @@ def on_intent(intent_request, session):
         attributes = session.get('attributes', {'num1': 1, 'num2': 6, 'count': 1})
         return generate_random_num(intent, session, **attributes)
     elif intent_name == "AMAZON.HelpIntent":
-        return get_welcome_response()
+        return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
         return handle_session_end_request()
     else:
