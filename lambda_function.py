@@ -87,7 +87,7 @@ def handle_session_end_request():
     # card_title = "Session Ended"
     card_title = "セッション終了"
 
-    speech_output = "さようなら。 "
+    speech_output = "乱数のある生活を終了します。さようなら。 "
 
     # Setting this to true ends the session and exits the skill.
     should_end_session = True
@@ -182,8 +182,11 @@ def on_intent(intent_request, session):
     elif intent_name == "SelectIntent":
         return generate_random_num(intent, session, num1=1)
     elif intent_name == "RepeatIntent":
-        attributes = session.get('attributes', {'num1': 1, 'num2': 6, 'count': 1})
-        return generate_random_num(intent, session, **attributes)
+        if 'attributes' not in session:
+            return handle_error_status()
+        else:
+            attributes = session.get('attributes')
+            return generate_random_num(intent, session, **attributes)
     elif intent_name == "AMAZON.HelpIntent":
         return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
