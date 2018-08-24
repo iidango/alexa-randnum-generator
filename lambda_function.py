@@ -9,7 +9,8 @@ import random
 
 # --------------- Helpers that build all of the responses ----------------------
 
-def build_speechlet_response(title, output, reprompt_text, should_end_session):
+def build_speechlet_response(title, output, reprompt_text, should_end_session, card_content=None):
+    card_content = output if card_content is None else card_content
     return {
         'outputSpeech': {
             'type': 'PlainText',
@@ -116,27 +117,44 @@ def generate_random_num(intent, session, num1=1, num2=6, count=1):
             num1 = int(intent['slots'].get('firstNum', {}).get('value', num1))
             num2 = int(intent['slots'].get('secondNum', {}).get('value', num2))
             count = int(intent['slots'].get('count', {}).get('value', count))
+    except ValueError:
+        return handle_error_status()
 
+    if count > 100:
         session_attributes = {}
         session_attributes.update({'num1': num1, 'num2': num2, 'count': count})
-        should_end_session = False
+        should_end_session = True
 
         # card_title = intent['name']
         card_title = "{}から{}の乱数を{}個".format(num1, num2, count)
         print("create {} random number from {} to {}".format(count, num1, num2))
 
-        speech_output = ""
-        for i in range(count):
-            num = random.randint(num1, num2)
-            speech_output += str(num) + "、"
-        speech_output += "です。続けて他の数字を生成できます。"
-    except ValueError:
-        return handle_error_status()
+        speech_output = "すいません。同時に振れる回数は100回までです。さようなら。"
+        reprompt_text = ""
+        return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+    
+    session_attributes = {}
+    session_attributes.update({'num1': num1, 'num2': num2, 'count': count})
+    should_end_session = False
+
+    # card_title = intent['name']
+    card_title = "{}から{}の乱数を{}個".format(num1, num2, count)
+    print("create {} random number from {} to {}".format(count, num1, num2))
+
+    speech_output = ""
+    card_content = ""
+    for i in range(count):
+        num = random.randint(num1, num2)
+        speech_output += str(num) + "、"
+        card_content += str(num) + "、"
+    speech_output += "です。別の値が欲しい場合はさらに話しかけてください。終了する場合は「さようなら」と話しかけてください。"
+    card_content += "です。"
 
     # reprompt_text = speech_output
     reprompt_text = ""
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+        card_title, speech_output, reprompt_text, should_end_session, card_content))
 
 
 # --------------- Events ------------------
